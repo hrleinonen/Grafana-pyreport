@@ -26,7 +26,7 @@ optional arguments:
   -f FOLDER, --folder FOLDER Where to put generated reports (default is working dir). (default: None)
   ```
 
-###### Templating
+#### Templating
 Templating is quite straightforward.
 
 ```
@@ -62,3 +62,6 @@ Peaks in graph can indicate some network scanner activity.
 
 <id:20>
 ```
+
+#### Getting started (not teplating)
+./grafana-pyreport.py -t 2w <apikey> <dashboard id> <url to grafana>
