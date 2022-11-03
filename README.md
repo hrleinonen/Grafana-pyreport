@@ -63,5 +63,17 @@ Peaks in graph can indicate some network scanner activity.
 <id:20>
 ```
 
-#### Getting started (not teplating)
+#### Getting started (not templating)
+Generate simple report for all panels in Grafana dashboard.
+
 ./grafana-pyreport.py -t 2w <apikey> <dashboard id> <url to grafana>
+
+#### Getting started (templating)
+Generate simple report for all panels in Grafana dashboard.
+
+./grafana-pyreport.py -p -t 2w <apikey> <dashboard id> <url to grafana>
+
+After this open your report and check panel id's.
+  
+Now generate template file using.
+ 
