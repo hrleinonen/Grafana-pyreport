@@ -70,10 +70,14 @@ Generate simple report for all panels in Grafana dashboard.
 
 #### Getting started (templating)
 Generate simple report for all panels in Grafana dashboard.
-
+```
 ./grafana-pyreport.py -p -t 2w <apikey> <dashboard id> <url to grafana>
-
+```
 After this open your report and check panel id's.
   
-Now generate template file using.
- 
+Now generate template file using text editor.
+
+Generate report using template.
+```
+./grafana-pyreport.py -l fortigate.tpl -t 2w <apikey> <dashboard id> <url to grafana>
+```
