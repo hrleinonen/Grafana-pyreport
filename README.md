@@ -82,6 +82,9 @@ Generate report using template.
 ./grafana-pyreport.py -l fortigate.tpl -t 2w <apikey> <dashboard id> <url to grafana>
 ```
 
+Dashboard exmple:
+![This is an image](https://myoctocat.com/assets/images/base-octocat.svg)
+
 #### TODO
 - template option to change image size
 - possibility to use configuration file(s) (URL, API-key and dashboard id)
