@@ -7,7 +7,7 @@ So here comes grafana-pyreport. I publish this also in Docker image, when I have
 
 Usage:
 ```
-./grafana-pyreport-0.9.py [-h] [-p] -t TIMEFRAME [-l TEMPLATE] [-o ORG] [-z TIMEZONE] [-f FOLDER] apitoken desktop url
+./grafana-pyreport.py [-h] [-p] -t TIMEFRAME [-l TEMPLATE] [-o ORG] [-z TIMEZONE] [-f FOLDER] apitoken desktop url
 
 Grafana pyreport help.
 
@@ -81,3 +81,9 @@ Generate report using template.
 ```
 ./grafana-pyreport.py -l fortigate.tpl -t 2w <apikey> <dashboard id> <url to grafana>
 ```
+
+#### TODO
+- template option to change image size
+- possibility to use configuration file(s) (URL, API-key and dashboard id)
+- possibility to create report straight from the Grafana dashboard
+- generate docker image
