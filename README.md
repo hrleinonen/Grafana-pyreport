@@ -3,7 +3,7 @@
 I needed a tool to create Word reports from Grafana OSS version and I did not find existing tool
 which includes also some kind of templating capabilities. So that's why i decided to create my own tool.
 
-So here it comes grafana-pyreport. I publish this also in Docker image, when I have enough time to do it.
+So here comes grafana-pyreport. I publish this also in Docker image, when I have enough time to do it.
 
 Usage:
 ```
