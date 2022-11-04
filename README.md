@@ -63,11 +63,19 @@ Peaks in graph can indicate some network scanner activity.
 <id:20>
 ```
 
+Dashboard exmple:
+
+![This is an image](https://github.com/hrleinonen/Grafana-pyreport/blob/main/reports/Dashboard.jpg)
+
+You can find your dashboard id here:
+
+![This is an image](https://github.com/hrleinonen/Grafana-pyreport/blob/main/reports/Dashboard.jpg)
+
 #### Getting started (not templating)
 Generate simple report for all panels in Grafana dashboard.
-
+```
 ./grafana-pyreport.py -t 2w <apikey> <dashboard id> <url to grafana>
-
+```
 #### Getting started (templating)
 Generate simple report for all panels in Grafana dashboard.
 ```
@@ -81,9 +89,6 @@ Generate report using template.
 ```
 ./grafana-pyreport.py -l fortigate.tpl -t 2w <apikey> <dashboard id> <url to grafana>
 ```
-
-Dashboard exmple:
-![This is an image](https://myoctocat.com/assets/images/base-octocat.svg)
 
 #### TODO
 - template option to change image size
