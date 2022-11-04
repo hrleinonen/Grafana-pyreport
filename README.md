@@ -69,7 +69,7 @@ Dashboard exmple:
 
 You can find your dashboard id here:
 
-![This is an image](https://github.com/hrleinonen/Grafana-pyreport/blob/main/reports/Dashboard.jpg)
+![This is an image](https://github.com/hrleinonen/Grafana-pyreport/blob/main/reports/Dashboard%20Id.png)
 
 #### Getting started (not templating)
 Generate simple report for all panels in Grafana dashboard.
