@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Grafana-pyreport version 0.9
+# Grafana-pyreport version 0.92
 # By: Ville Leinonen
 # License: GPLv2
 #
@@ -20,12 +20,14 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 from docx.enum.style import WD_STYLE_TYPE
 
+ver_number = "0.92"
+
 # Get arguments from cli.
 def arguments():
 
-    parser = argparse.ArgumentParser(description="Grafana pyreport help.",
+    parser = argparse.ArgumentParser(description="Grafana-pyreport " + str(ver_number) + " help.",
                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-p", "--presentation", action="store_true", help="Create prensentation template.")
+    parser.add_argument("-r", "--raw", action="store_true", help="Create raw report inc. image ID's.")
     parser.add_argument("-t", "--timeframe", help="Reporting timeframe 1d, 1w, 2w or 1m.", required=True)
     parser.add_argument("-l", "--template", help="Use template to create report.")
     parser.add_argument("-o", "--org", help="Organization (default is 1).")
@@ -39,6 +41,16 @@ def arguments():
 
     args = parser.parse_args()
     return args
+
+# Check if running inside Docker container
+def container_check():
+    container_key = os.environ.get('DOCKER', False)
+
+    if container_key:
+        container = 1
+    else:
+        container = 0
+    return container
 
 # Generate time related arguments
 def grafana_timeframe(time_frame):
@@ -128,7 +140,7 @@ def grafana_dashboard(apitoken, desktop, url):
 
 # Generate word report
 def grafana_report(time_frame, time_zone, date_today, date_yesterday, date_start, date_yesterday_unix_msec, date_start_unix_msec,\
-    presentation, template, apitoken, desktop, url, dashboard_name, id_list, id_title, id_row_list, id_row_title, folder, org):
+    raw, template, apitoken, desktop, url, dashboard_name, id_list, id_title, id_row_list, id_row_title, folder, org, container):
 
     headers = {"Authorization": "Bearer " + apitoken + ""}
 
@@ -168,7 +180,7 @@ def grafana_report(time_frame, time_zone, date_today, date_yesterday, date_start
     document.add_page_break()
 
     # Data pages
-    if presentation:
+    if raw:
         for x in range(0, len(id_list)):
             print(".", end='', flush=True)
             image_url = str(url) + "/render/d-solo/" + desktop + "/" + dashboard_name + "?orgId=" + org + "&from=" + date_start_unix_msec + "&to="\
@@ -196,10 +208,13 @@ def grafana_report(time_frame, time_zone, date_today, date_yesterday, date_start
 
             paragraph = document.add_paragraph()
             paragraph.style = 'List Number'
-            paragraph.add_run(str(id_title[x]) + dashboard_name + "\n", style = 'Normal Style')
+            paragraph.add_run(str(id_title[x]) + "\n", style = 'Normal Style')
 
     else:
-        template_file = open(template, 'r')
+        if container:
+            template_file = open("/opt/grafana-pyreport/templates/" + template, 'r')
+        else:
+            template_file = open(template, 'r')
         Lines = template_file.readlines()
 
         for line in Lines:
@@ -239,23 +254,41 @@ def grafana_report(time_frame, time_zone, date_today, date_yesterday, date_start
                 paragraph.add_run(str(line), style = 'Normal Style')
 
     # Output to Word file
-    if presentation:
+    if raw:
         if folder:
-            document.save(folder + "/" + dashboard_name + "-raw-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            if container:
+                document.save("/opt/grafana-pyreport/output/" + folder + "/" + dashboard_name + "-raw-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            else:
+                document.save(folder + "/" + dashboard_name + "-raw-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
         else:
-            document.save(dashboard_name + "-raw-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            if container:
+                document.save("/opt/grafana-pyreport/output/" + dashboard_name + "-raw-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            else:
+                document.save(dashboard_name + "-raw-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
         document_name = dashboard_name + "-raw-" + str(date_start) + "-" + str(date_yesterday) + ".docx"
     elif not template:
         if folder:
-            document.save(folder + "/" + dashboard_name + "-prensentation-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            if container:
+                document.save("/opt/grafana-pyreport/output/" + folder + "/" + dashboard_name + "-prensentation-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            else:
+                document.save(folder + "/" + dashboard_name + "-prensentation-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
         else:
-            document.save(dashboard_name + "-prensentation-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            if container:
+                document.save("/opt/grafana-pyreport/output/" + dashboard_name + "-prensentation-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            else:
+                document.save(dashboard_name + "-prensentation-" + str(date_start) + "-" + str(date_yesterday) + ".docx")
         document_name = dashboard_name + "-prensentation-" + str(date_start) + "-" + str(date_yesterday) + ".docx"        
     else:
         if folder:
-            document.save(folder + "/" + dashboard_name + "_" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            if container:
+                document.save("/opt/grafana-pyreport/output/" + folder + "/" + dashboard_name + "_" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            else:
+                document.save(folder + "/" + dashboard_name + "_" + str(date_start) + "-" + str(date_yesterday) + ".docx")
         else:
-            document.save(dashboard_name + "_" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            if container:
+                document.save("/opt/grafana-pyreport/output/" + dashboard_name + "_" + str(date_start) + "-" + str(date_yesterday) + ".docx")
+            else:
+                document.save(dashboard_name + "_" + str(date_start) + "-" + str(date_yesterday) + ".docx")
         document_name = dashboard_name + "_" + str(date_start) + "-" + str(date_yesterday) + ".docx"
 
     return document_name
@@ -265,10 +298,9 @@ def main():
 
     # Parse commandline argiments
     args = arguments()
-    presentation = args.presentation
     time_frame = args.timeframe
     time_zone = args.timezone
-    presentation = args.presentation
+    raw = args.raw
     template = args.template
     apitoken = args.apitoken
     desktop = args.desktop
@@ -276,13 +308,21 @@ def main():
     folder = args.folder
     org = args.org
 
-    if presentation and template:
+    # Check if inside Docker container
+    container = container_check()
+
+    if raw and template:
         print("Please do not use presentation and template switches together.")
         exit()
     
-    if template and not path.exists(template):
-        print("Template file {} not found.".format(template))
-        exit()
+    if container:
+        if template and not path.exists("/opt/grafana-pyreport/templates/" + template):
+            print("Template file {} not found.".format(template))
+            exit()
+    else:
+        if template and not path.exists(template):
+            print("Template file {} not found.".format(template))
+            exit()
 
     print("Starting generating report using timeframe {}".format(time_frame))
     
@@ -295,7 +335,7 @@ def main():
     # Create word report
     print("Getting data from Grafana {}, this can take long time.".format(url))
     document_name = grafana_report(time_frame, time_zone, date_today, date_yesterday, date_start, date_yesterday_unix_msec, date_start_unix_msec,\
-         presentation, template, apitoken, desktop, url, dashboard_name, id_list, id_title, id_row_list, id_row_title, folder, org)
+         raw, template, apitoken, desktop, url, dashboard_name, id_list, id_title, id_row_list, id_row_title, folder, org, container)
     
     print("\nReporting finished, report name is {}".format(str(document_name)))
 
