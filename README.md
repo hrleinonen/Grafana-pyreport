@@ -90,6 +90,34 @@ Generate report using template.
 ./grafana-pyreport.py -l fortigate.tpl -t 2w <apikey> <dashboard id> <url to grafana>
 ```
 
+#### Docker (build your own)
+- download Dockerfile, requirements.txt and grafana-pyreport.py
+- build docker image
+- make output and template directories
+- start docker container
+- generate reports
+
+Build docker image:
+```
+docker build -t grafana-pyreport:0.92 .
+```
+
+Generate directories:
+```
+mkdir -p /<dir>/ouput && mkdir -p /<dir>/templates
+```
+
+Start docker container:
+```
+docker run -d -it -v /opt/grafana-pyreport/templates:/opt/grafana-pyreport/templates -v /opt/grafana-pyreport/output:/opt/grafana-pyreport/output \
+--name grafana-pyreport grafana-pyreport:0.92
+```
+
+Generate reports:
+```
+docker exec -it grafana-pyreport grafana-pyreport -t 1w <apikey> <dashboard id> <url to grafana>
+```
+
 #### TODO
 - template option to change image size
 - possibility to use configuration file(s) (URL, API-key and dashboard id)
